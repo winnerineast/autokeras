@@ -160,6 +160,7 @@ class ModelTrainer:
                                        min_lr=0.5e-6)
 
         callbacks = [terminator, lr_scheduler, lr_reducer]
+        reset_weights(self.model)
         try:
             if constant.DATA_AUGMENTATION:
                 flow = self.datagen.flow(self.x_train, self.y_train, batch_size)
