@@ -1,6 +1,5 @@
 import os
 import random
-import pickle
 from functools import total_ordering
 from queue import PriorityQueue
 
@@ -16,7 +15,7 @@ from autokeras.bayesian import IncrementalGaussianProcess
 from autokeras.generator import RandomConvClassifierGenerator, DefaultClassifierGenerator
 from autokeras.graph import Graph
 from autokeras.layers import WeightedAdd
-from autokeras.net_transformer import transform
+from autokeras.net_transformer import transform, transform2
 from autokeras.utils import ModelTrainer, pickle_to_file
 from autokeras.utils import extract_config
 
@@ -141,15 +140,6 @@ class HillClimbingSearcher(Searcher):
         """Init HillClimbing Searcher with n_classes, input_shape, path, verbose"""
         super().__init__(n_classes, input_shape, path, verbose)
 
-    def _remove_duplicate(self, models):
-        """Remove the duplicate in the history_models"""
-        ans = []
-        for model_a in models:
-            model_a_config = extract_config(model_a)
-            if model_a_config not in self.history_configs:
-                ans.append(model_a)
-        return ans
-
     def search(self, x_train, y_train, x_test, y_test):
         """Override parent's search function. First model is randomly generated"""
         if not self.history:
@@ -159,14 +149,13 @@ class HillClimbingSearcher(Searcher):
 
         else:
             model = self.load_best_model()
-            new_graphs = transform(Graph(model, False))
+            new_graphs = transform2(Graph(model, False))
             new_models = []
             for graph in new_graphs:
                 nm_graph = Graph(model, True)
                 for args in graph.operation_history:
                     getattr(nm_graph, args[0])(*list(args[1:]))
                     new_models.append(nm_graph.produce_model())
-            new_models = self._remove_duplicate(list(new_models))
 
             for model in new_models:
                 if self.model_count < constant.MAX_MODEL_NUM:

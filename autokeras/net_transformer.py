@@ -1,5 +1,5 @@
 from copy import deepcopy
-from random import randint, random
+from random import randint, random, randrange
 
 from autokeras import constant
 from autokeras.constant import WEIGHTED_LAYER_FUNC_LIST
@@ -124,4 +124,17 @@ def transform(graph):
 
     graphs = list(filter(legal_graph, graphs))
 
+    return graphs
+
+
+def transform2(graph):
+    graphs = []
+    for i in range(8):
+        a = randrange(3)
+        if a == 0:
+            graphs.append(to_deeper_graph(deepcopy(graph)))
+        elif a == 1:
+            graphs.append(to_wider_graph(deepcopy(graph)))
+        elif a == 2:
+            graphs.append(to_skip_connection_graph(deepcopy(graph)))
     return graphs
