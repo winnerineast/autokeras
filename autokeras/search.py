@@ -159,7 +159,7 @@ class HillClimbingSearcher(Searcher):
 
             for model in new_models:
                 if self.model_count < constant.MAX_MODEL_NUM:
-                    self.add_model(model, x_train, y_train, x_test, y_test)
+                    self.add_model(model, x_train, y_train, x_test, y_test, constant.SEARCH_MAX_ITER)
                     pickle_to_file(self, os.path.join(self.path, 'searcher'))
 
             backend.clear_session()
