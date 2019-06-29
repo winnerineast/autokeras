@@ -1,15 +1,25 @@
 from distutils.core import setup
+from setuptools import find_packages
 
 setup(
     name='autokeras',
-    packages=['autokeras'],  # this must be the same as the name above
-    install_requires=['pytest', 'numpy', 'keras', 'scikit-learn', 'tensorflow', 'scipy'],
-    version='0.1.1',
-    description='Automated Machine Learning with Keras',
-    author='Haifeng Jin',
+    packages=find_packages(exclude=('tests',)),
+    install_requires=[
+        'tensorflow==2.0.0b0',
+        'scikit-learn==0.20.2',
+    ],
+    tests_require=[
+        'pytest==4.5.0',
+        'pytest-pep8',
+        'pytest-xdist',
+        'pytest-cov',
+    ],
+    version='1.0.0',
+    description='AutoML for deep learning',
+    author='Data Analytics at Texas A&M (DATA) Lab, Keras Team',
     author_email='jhfjhfj1@gmail.com',
     url='http://autokeras.com',
-    download_url='https://github.com/jhfjhfj1/autokeras/archive/0.1.1.tar.gz',
-    keywords=['automl'],  # arbitrary keywords
+    download_url='https://github.com/keras-team/autokeras/archive/1.0.0.tar.gz',
+    keywords=['AutoML', 'keras'],
     classifiers=[]
 )
