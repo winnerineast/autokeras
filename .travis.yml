@@ -5,27 +5,37 @@ jobs:
   include:
     - stage: test
       script:
+        - pip install -e .[tests] --progress-bar off
+        - pip install git+https://github.com/keras-team/keras-tuner.git@1.0rc0
         - pip install codacy-coverage
         - pytest tests --cov=autokeras --cov-report xml:coverage.xml
-        - python-codacy-coverage -r coverage.xml
+        - if ! [[ -z $CODACY_PROJECT_TOKEN ]]; then
+            python-codacy-coverage -r coverage.xml;
+          fi
+        - pip install python-coveralls && coveralls
     -
       script:
-        - pytest autokeras/ --pep8
-    - stage: deploy
+        - pip install -e .[tests] --progress-bar off
+        - pip install git+https://github.com/keras-team/keras-tuner.git@1.0rc0
+        - flake8
+    -
       script:
+        - pip install -e .[tests] --progress-bar off
+        - pip install git+https://github.com/keras-team/keras-tuner.git@1.0rc0
         - pip install mkdocs
         - pip install mkdocs-material
-        - sh docs.sh
+        - pip install keras-autodoc==0.4.0
+        - sh shell/docs.sh
       deploy:
         - provider: pages
           skip-cleanup: true
           github-token: "$GITHUB_TOKEN"
           keep-history: true
-          local-dir: docs/
+          local-dir: docs/site
           target-branch: gh-pages
           on:
             branch: master
-    -
+    - stage: deploy
       script:
         - python --version
       deploy:
